@@ -15,6 +15,7 @@ fn main() {
             .cloned(),
     );
 
+    #[expect(deprecated)]
     let config = rustls::ClientConfig::builder_with_provider(
         CryptoProvider {
             cipher_suites: vec![provider::cipher_suite::TLS13_CHACHA20_POLY1305_SHA256],
