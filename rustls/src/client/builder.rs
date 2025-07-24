@@ -28,6 +28,7 @@ impl ConfigBuilder<ClientConfig, WantsVersions> {
         self,
         mode: EchMode,
     ) -> Result<ConfigBuilder<ClientConfig, WantsVerifier>, Error> {
+        #[allow(deprecated)]
         let mut res = self.with_protocol_versions(&[&TLS13][..])?;
         res.state.client_ech_mode = Some(mode);
         Ok(res)

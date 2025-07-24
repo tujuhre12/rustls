@@ -201,10 +201,12 @@ impl<S: ConfigSide> ConfigBuilder<S, WantsVersions> {
     pub fn with_safe_default_protocol_versions(
         self,
     ) -> Result<ConfigBuilder<S, WantsVerifier>, Error> {
+        #[allow(deprecated)]
         self.with_protocol_versions(versions::DEFAULT_VERSIONS)
     }
 
     /// Use a specific set of protocol versions.
+    #[deprecated(note = "pending removal")]
     pub fn with_protocol_versions(
         self,
         versions: &[&'static versions::SupportedProtocolVersion],

@@ -453,6 +453,7 @@ impl ServerConfig {
     /// For more information, see the [`ConfigBuilder`] documentation.
     #[cfg(feature = "std")]
     pub fn builder() -> ConfigBuilder<Self, WantsVerifier> {
+        #[allow(deprecated)]
         Self::builder_with_protocol_versions(versions::DEFAULT_VERSIONS)
     }
 
@@ -469,12 +470,14 @@ impl ServerConfig {
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
     #[cfg(feature = "std")]
+    #[deprecated(note = "pending removal")]
     pub fn builder_with_protocol_versions(
         versions: &[&'static versions::SupportedProtocolVersion],
     ) -> ConfigBuilder<Self, WantsVerifier> {
         // Safety assumptions:
         // 1. that the provider has been installed (explicitly or implicitly)
         // 2. that the process-level default provider is usable with the supplied protocol versions.
+        #[allow(deprecated)]
         Self::builder_with_provider(
             CryptoProvider::get_default_or_install_from_crate_features().clone(),
         )
