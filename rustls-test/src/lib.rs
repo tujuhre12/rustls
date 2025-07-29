@@ -969,22 +969,6 @@ pub fn server_name(name: &'static str) -> ServerName<'static> {
     name.try_into().unwrap()
 }
 
-pub struct FailsReads {
-    errkind: io::ErrorKind,
-}
-
-impl FailsReads {
-    pub fn new(errkind: io::ErrorKind) -> Self {
-        Self { errkind }
-    }
-}
-
-impl io::Read for FailsReads {
-    fn read(&mut self, _b: &mut [u8]) -> io::Result<usize> {
-        Err(io::Error::from(self.errkind))
-    }
-}
-
 /// An object that impls Read and Write and raises WouldBlock a lot.
 ///
 /// This object panics on drop if the configured expected reads/writes
