@@ -985,6 +985,66 @@ impl io::Read for FailsReads {
     }
 }
 
+/// An object that impls Read and Write and raises WouldBlock a lot.
+///
+/// This object panics on drop if the configured expected reads/writes
+/// didn't take place.
+#[derive(Debug, Default)]
+pub struct NonBlockError {
+    /// Each `write()` call is satisfied by inspecting this field.
+    ///
+    /// If it is empty, `WouldBlock` is returned.  Otherwise the write is
+    /// satisfied by popping a value and returning it (reduced by the size
+    /// of the write, if needed).
+    pub writes: Vec<usize>,
+
+    /// Each `read()` call is satisfied by inspecting this field.
+    ///
+    /// If it is empty, `WouldBlock` is returned.  Otherwise the read is
+    /// satisfied by popping a value and copying it into the output
+    /// buffer.  Each value must be no longer than the buffer for that
+    /// call.
+    pub reads: Vec<Vec<u8>>,
+}
+
+impl io::Read for NonBlockError {
+    fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+        println!("read {:?}", buf.len());
+        match self.reads.pop() {
+            None => Err(io::ErrorKind::WouldBlock.into()),
+            Some(data) => {
+                assert!(data.len() <= buf.len());
+                let take = core::cmp::min(data.len(), buf.len());
+                buf[..take].clone_from_slice(&data[..take]);
+                Ok(take)
+            }
+        }
+    }
+}
+
+impl io::Write for NonBlockError {
+    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+        println!("write {:?}", buf.len());
+        match self.writes.pop() {
+            None => Err(io::ErrorKind::WouldBlock.into()),
+            Some(n) => Ok(core::cmp::min(n, buf.len())),
+        }
+    }
+
+    fn flush(&mut self) -> io::Result<()> {
+        println!("flush");
+        Ok(())
+    }
+}
+
+impl Drop for NonBlockError {
+    fn drop(&mut self) {
+        // ensure the object was exhausted as expected
+        assert_eq!(self.reads.as_slice(), Vec::<Vec<u8>>::new());
+        assert_eq!(self.writes.as_slice(), Vec::<usize>::new());
+    }
+}
+
 pub fn do_suite_and_kx_test(
     client_config: ClientConfig,
     server_config: ServerConfig,
