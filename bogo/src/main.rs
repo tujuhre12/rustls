@@ -787,7 +787,6 @@ fn make_server_cfg(opts: &Options, key_log: &Arc<KeyLogMemo>) -> Arc<ServerConfi
     let (certs, key) = cred.load_from_file();
 
     let mut cfg = ServerConfig::builder_with_provider(opts.provider().into())
-        .with_safe_default_protocol_versions()
         .unwrap()
         .with_client_cert_verifier(client_auth)
         .with_single_cert_with_ocsp(certs, key, opts.server_ocsp_response.clone())
@@ -923,15 +922,19 @@ impl Debug for ClientCacheWithoutKxHints {
 
 fn make_client_cfg(opts: &Options, key_log: &Arc<KeyLogMemo>) -> Arc<ClientConfig> {
     let provider = Arc::new(opts.provider());
-    let cfg = ClientConfig::builder_with_provider(provider.clone());
+    let cfg = ClientConfig::builder_with_provider(provider.clone()).unwrap();
 
     let cfg = if opts.selected_provider.supports_ech() {
+        let ech_cfg = ClientConfig::builder_with_provider(opts.provider().with_only_tls13().into());
+
         if let Some(ech_config_list) = &opts.ech_config_list {
             let ech_mode: EchMode = EchConfig::new(ech_config_list.clone(), ALL_HPKE_SUITES)
                 .unwrap_or_else(|_| quit(":INVALID_ECH_CONFIG_LIST:"))
                 .into();
 
-            cfg.with_ech(ech_mode)
+            ech_cfg
+                .unwrap()
+                .with_ech(ech_mode)
                 .expect("invalid ECH config")
         } else if opts.enable_ech_grease {
             let ech_mode = EchMode::Grease(EchGreaseConfig::new(
@@ -939,15 +942,15 @@ fn make_client_cfg(opts: &Options, key_log: &Arc<KeyLogMemo>) -> Arc<ClientConfi
                 HpkePublicKey(GREASE_25519_PUBKEY.to_vec()),
             ));
 
-            cfg.with_ech(ech_mode)
+            ech_cfg
+                .unwrap()
+                .with_ech(ech_mode)
                 .expect("invalid GREASE ECH config")
         } else {
-            cfg.with_safe_default_protocol_versions()
-                .expect("inconsistent settings")
+            cfg
         }
     } else {
-        cfg.with_safe_default_protocol_versions()
-            .expect("inconsistent settings")
+        cfg
     };
 
     let cfg = cfg

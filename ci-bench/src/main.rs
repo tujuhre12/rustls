@@ -548,7 +548,6 @@ impl ClientSideStepper<'_> {
             }
             .into(),
         )
-        .with_safe_default_protocol_versions()
         .unwrap();
 
         let mut cfg = match params.auth_key {
@@ -636,9 +635,7 @@ impl ServerSideStepper<'_> {
     fn make_config(params: &BenchmarkParams, resume: ResumptionKind) -> Arc<ServerConfig> {
         assert_eq!(params.ciphersuite.version().version(), params.version);
 
-        let cfg = ServerConfig::builder_with_provider(params.provider.clone().into())
-            .with_safe_default_protocol_versions()
-            .unwrap();
+        let cfg = ServerConfig::builder_with_provider(params.provider.clone().into()).unwrap();
 
         let mut cfg = match params.auth_key {
             AuthKeySource::KeyType(key_type) => cfg

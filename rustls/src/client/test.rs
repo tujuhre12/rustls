@@ -52,7 +52,6 @@ mod tests {
                 .with_only_tls13()
                 .into(),
         )
-        .with_safe_default_protocol_versions()
         .unwrap()
         .with_root_certificates(roots())
         .with_no_client_auth();
@@ -70,7 +69,6 @@ mod tests {
                     .with_only_tls13()
                     .into(),
             )
-            .with_safe_default_protocol_versions()
             .unwrap()
             .with_root_certificates(roots())
             .with_no_client_auth(),
@@ -89,7 +87,6 @@ mod tests {
             super::provider::default_provider().with_only_tls13(),
         ] {
             let config = ClientConfig::builder_with_provider(provider.into())
-                .with_safe_default_protocol_versions()
                 .unwrap()
                 .with_root_certificates(roots())
                 .with_no_client_auth();
@@ -109,7 +106,6 @@ mod tests {
     fn test_client_rejects_hrr_with_varied_session_id() {
         let config =
             ClientConfig::builder_with_provider(super::provider::default_provider().into())
-                .with_safe_default_protocol_versions()
                 .unwrap()
                 .with_root_certificates(roots())
                 .with_no_client_auth();
@@ -147,7 +143,6 @@ mod tests {
     fn test_client_rejects_no_extended_master_secret_extension_when_require_ems_or_fips() {
         let mut config =
             ClientConfig::builder_with_provider(super::provider::default_provider().into())
-                .with_safe_default_protocol_versions()
                 .unwrap()
                 .with_root_certificates(roots())
                 .with_no_client_auth();
@@ -199,7 +194,6 @@ mod tests {
         ] {
             let client_hello = client_hello_sent_for_config(
                 ClientConfig::builder_with_provider(provider.into())
-                    .with_safe_default_protocol_versions()
                     .unwrap()
                     .dangerous()
                     .with_custom_certificate_verifier(Arc::new(cas_sending_server_verifier.clone()))
@@ -221,7 +215,6 @@ mod tests {
     fn test_client_with_custom_verifier_can_accept_ecdsa_sha1_signatures() {
         let verifier = Arc::new(ExpectSha1EcdsaVerifier::default());
         let config = ClientConfig::builder_with_provider(x25519_provider().into())
-            .with_safe_default_protocol_versions()
             .unwrap()
             .dangerous()
             .with_custom_certificate_verifier(verifier.clone())
@@ -465,7 +458,6 @@ mod tests {
                 .with_only_tls13()
                 .into(),
         )
-        .with_safe_default_protocol_versions()
         .unwrap()
         .dangerous()
         .with_custom_certificate_verifier(Arc::new(ServerVerifierRequiringRpk))
@@ -658,7 +650,6 @@ mod tests {
 fn hybrid_kx_component_share_offered_if_supported_separately() {
     let ch = client_hello_sent_for_config(
         ClientConfig::builder_with_provider(crate::crypto::aws_lc_rs::default_provider().into())
-            .with_safe_default_protocol_versions()
             .unwrap()
             .with_root_certificates(roots())
             .with_no_client_auth(),
@@ -685,7 +676,6 @@ fn hybrid_kx_component_share_not_offered_unless_supported_separately() {
     };
     let ch = client_hello_sent_for_config(
         ClientConfig::builder_with_provider(provider.into())
-            .with_safe_default_protocol_versions()
             .unwrap()
             .with_root_certificates(roots())
             .with_no_client_auth(),

@@ -208,6 +208,7 @@ impl TestPki {
         // based on the ClientHello (e.g. selecting a different certificate, or customizing
         // supported algorithms/protocol versions).
         let mut server_config = ServerConfig::builder()
+            .unwrap()
             .with_client_cert_verifier(verifier)
             .with_single_cert(
                 vec![self.server_cert.cert.der().clone()],

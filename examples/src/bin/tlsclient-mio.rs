@@ -460,8 +460,7 @@ fn make_config(args: &Args) -> Arc<rustls::ClientConfig> {
     }
 
     let config = rustls::ClientConfig::builder_with_provider(args.provider().into())
-        .with_safe_default_protocol_versions()
-        .expect("inconsistent cipher-suite/versions selected")
+        .expect("inconsistent provider configuration")
         .with_root_certificates(root_store);
 
     let mut config = match (&args.auth_key, &args.auth_certs) {

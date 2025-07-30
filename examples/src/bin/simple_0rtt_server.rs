@@ -39,6 +39,7 @@ fn main() -> Result<(), Box<dyn StdError>> {
         PrivateKeyDer::from_pem_file(private_key_file).expect("cannot open private key file");
 
     let mut config = rustls::ServerConfig::builder()
+        .unwrap()
         .with_no_client_auth()
         .with_single_cert(certs, private_key)?;
     config.max_early_data_size = 1000;

@@ -32,6 +32,7 @@ fn main() -> Result<(), Box<dyn StdError>> {
         .collect();
     let private_key = PrivateKeyDer::from_pem_file(private_key_file).unwrap();
     let config = rustls::ServerConfig::builder()
+        .unwrap()
         .with_no_client_auth()
         .with_single_cert(certs, private_key)?;
 

@@ -48,6 +48,7 @@ mod client {
         ));
 
         ClientConfig::builder()
+            .unwrap()
             .dangerous()
             .with_custom_certificate_verifier(Arc::new(SimpleRpkServerCertVerifier::new(vec![
                 server_raw_key,
@@ -198,6 +199,7 @@ mod server {
         let server_cert_resolver = Arc::new(AlwaysResolvesServerRawPublicKeys::new(certified_key));
 
         ServerConfig::builder()
+            .unwrap()
             .with_client_cert_verifier(client_cert_verifier)
             .with_cert_resolver(server_cert_resolver)
     }
@@ -394,6 +396,7 @@ mod tests {
             .collect();
         let private_key = PrivateKeyDer::from_pem_file(private_key_file).unwrap();
         let config = rustls::ServerConfig::builder()
+            .unwrap()
             .with_no_client_auth()
             .with_single_cert(certs, private_key)
             .unwrap();

@@ -9,7 +9,7 @@ use crate::error::Error;
 use crate::sign::{CertifiedKey, SingleCertAndKey};
 use crate::sync::Arc;
 use crate::verify::{ClientCertVerifier, NoClientAuth};
-use crate::{NoKeyLog, compress, versions};
+use crate::{NoKeyLog, compress};
 
 impl ConfigBuilder<ServerConfig, WantsVerifier> {
     /// Choose how to verify client certificates.
@@ -19,7 +19,6 @@ impl ConfigBuilder<ServerConfig, WantsVerifier> {
     ) -> ConfigBuilder<ServerConfig, WantsServerCert> {
         ConfigBuilder {
             state: WantsServerCert {
-                versions: self.state.versions,
                 verifier: client_cert_verifier,
             },
             provider: self.provider,
@@ -40,7 +39,6 @@ impl ConfigBuilder<ServerConfig, WantsVerifier> {
 /// For more information, see the [`ConfigBuilder`] documentation.
 #[derive(Clone, Debug)]
 pub struct WantsServerCert {
-    versions: versions::EnabledVersions,
     verifier: Arc<dyn ClientCertVerifier>,
 }
 
@@ -110,7 +108,6 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
             session_storage: Arc::new(handy::NoServerSessionStorage {}),
             ticketer: Arc::new(handy::NeverProducesTickets {}),
             alpn_protocols: Vec::new(),
-            versions: self.state.versions,
             key_log: Arc::new(NoKeyLog {}),
             enable_secret_extraction: false,
             max_early_data_size: 0,

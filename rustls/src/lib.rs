@@ -163,6 +163,7 @@
 //! # #[cfg(feature = "aws-lc-rs")] {
 //! # let root_store: rustls::RootCertStore = panic!();
 //! let config = rustls::ClientConfig::builder()
+//!     .expect("invalid provider")
 //!     .with_root_certificates(root_store)
 //!     .with_no_client_auth();
 //! # }
@@ -183,6 +184,7 @@
 //! #      .cloned(),
 //! # );
 //! # let config = rustls::ClientConfig::builder()
+//! #     .unwrap()
 //! #     .with_root_certificates(root_store)
 //! #     .with_no_client_auth();
 //! let rc_config = Arc::new(config);
@@ -518,7 +520,7 @@ pub mod unbuffered {
 }
 
 // The public interface is:
-pub use crate::builder::{ConfigBuilder, ConfigSide, WantsVerifier, WantsVersions};
+pub use crate::builder::{ConfigBuilder, ConfigSide, WantsVerifier};
 pub use crate::common_state::{CommonState, HandshakeKind, IoState, Side};
 #[cfg(feature = "std")]
 pub use crate::conn::{Connection, Reader, Writer};

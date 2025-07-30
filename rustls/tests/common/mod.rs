@@ -12,17 +12,13 @@ pub use rustls_test::*;
 pub fn server_config_builder(
     provider: &CryptoProvider,
 ) -> rustls::ConfigBuilder<ServerConfig, rustls::WantsVerifier> {
-    rustls::ServerConfig::builder_with_provider(provider.clone().into())
-        .with_safe_default_protocol_versions()
-        .unwrap()
+    rustls::ServerConfig::builder_with_provider(provider.clone().into()).unwrap()
 }
 
 pub fn client_config_builder(
     provider: &CryptoProvider,
 ) -> rustls::ConfigBuilder<ClientConfig, rustls::WantsVerifier> {
-    rustls::ClientConfig::builder_with_provider(provider.clone().into())
-        .with_safe_default_protocol_versions()
-        .unwrap()
+    rustls::ClientConfig::builder_with_provider(provider.clone().into()).unwrap()
 }
 
 pub fn webpki_client_verifier_builder(

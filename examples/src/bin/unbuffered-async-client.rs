@@ -28,6 +28,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     };
 
     let config = ClientConfig::builder()
+        .unwrap()
         .with_root_certificates(root_store)
         .with_no_client_auth();
 

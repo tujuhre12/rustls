@@ -28,6 +28,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .expect("missing private key file argument");
 
     let mut config = ServerConfig::builder()
+        .unwrap()
         .with_no_client_auth()
         .with_single_cert(load_certs(cert_file)?, load_private_key(private_key_file)?)?;
 

@@ -21,7 +21,6 @@ fn config_builder_for_client_rejects_cipher_suites_without_compatible_kx_groups(
     };
 
     let build_err = ClientConfig::builder_with_provider(bad_crypto_provider.into())
-        .with_safe_default_protocol_versions()
         .unwrap_err()
         .to_string();
 
@@ -55,15 +54,11 @@ fn ffdhe_ciphersuite() {
         });
         let client_config = finish_client_config(
             KeyType::Rsa2048,
-            rustls::ClientConfig::builder_with_provider(provider.clone())
-                .with_safe_default_protocol_versions()
-                .unwrap(),
+            rustls::ClientConfig::builder_with_provider(provider.clone()).unwrap(),
         );
         let server_config = finish_server_config(
             KeyType::Rsa2048,
-            rustls::ServerConfig::builder_with_provider(provider)
-                .with_safe_default_protocol_versions()
-                .unwrap(),
+            rustls::ServerConfig::builder_with_provider(provider).unwrap(),
         );
         do_suite_and_kx_test(
             client_config,
@@ -92,7 +87,6 @@ fn server_avoids_dhe_cipher_suites_when_client_has_no_known_dhe_in_groups_ext() 
             }
             .into(),
         )
-        .with_safe_default_protocol_versions()
         .unwrap(),
     );
 
@@ -109,7 +103,6 @@ fn server_avoids_dhe_cipher_suites_when_client_has_no_known_dhe_in_groups_ext() 
             }
             .into(),
         )
-        .with_safe_default_protocol_versions()
         .unwrap(),
     );
 
@@ -147,7 +140,6 @@ fn server_avoids_cipher_suite_with_no_common_kx_groups() {
             }
             .into(),
         )
-        .with_safe_default_protocol_versions()
         .unwrap(),
     )
     .into();
@@ -234,9 +226,7 @@ fn server_avoids_cipher_suite_with_no_common_kx_groups() {
         };
         let client_config = finish_client_config(
             KeyType::Rsa2048,
-            rustls::ClientConfig::builder_with_provider(provider.into())
-                .with_safe_default_protocol_versions()
-                .unwrap(),
+            rustls::ClientConfig::builder_with_provider(provider.into()).unwrap(),
         )
         .into();
 

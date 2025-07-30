@@ -75,14 +75,12 @@ fn test_version(provider: CryptoProvider) -> Transcript {
     let _ = env_logger::try_init();
 
     let server_config = ServerConfig::builder_with_provider(provider.clone().into())
-        .with_safe_default_protocol_versions()
         .unwrap()
         .with_no_client_auth()
         .with_cert_resolver(rustls_fuzzing_provider::server_cert_resolver());
     let mut server = ServerConnection::new(server_config.into()).unwrap();
 
     let client_config = ClientConfig::builder_with_provider(provider.into())
-        .with_safe_default_protocol_versions()
         .unwrap()
         .dangerous()
         .with_custom_certificate_verifier(rustls_fuzzing_provider::server_verifier())

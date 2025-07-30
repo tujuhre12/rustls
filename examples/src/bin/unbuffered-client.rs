@@ -19,6 +19,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
 
     let mut config = ClientConfig::builder()
+        .unwrap()
         .with_root_certificates(root_store)
         .with_no_client_auth();
     config.enable_early_data = SEND_EARLY_DATA;

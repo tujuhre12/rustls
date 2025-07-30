@@ -480,17 +480,13 @@ impl KeyType {
 pub fn server_config_builder(
     provider: &CryptoProvider,
 ) -> rustls::ConfigBuilder<ServerConfig, rustls::WantsVerifier> {
-    ServerConfig::builder_with_provider(provider.clone().into())
-        .with_safe_default_protocol_versions()
-        .unwrap()
+    ServerConfig::builder_with_provider(provider.clone().into()).unwrap()
 }
 
 pub fn client_config_builder(
     provider: &CryptoProvider,
 ) -> rustls::ConfigBuilder<ClientConfig, rustls::WantsVerifier> {
-    ClientConfig::builder_with_provider(provider.clone().into())
-        .with_safe_default_protocol_versions()
-        .unwrap()
+    ClientConfig::builder_with_provider(provider.clone().into()).unwrap()
 }
 
 pub fn finish_server_config(
@@ -520,7 +516,6 @@ pub fn make_server_config_with_kx_groups(
             }
             .into(),
         )
-        .with_safe_default_protocol_versions()
         .unwrap(),
     )
 }
@@ -663,7 +658,6 @@ pub fn make_client_config_with_kx_groups(
         }
         .into(),
     )
-    .with_safe_default_protocol_versions()
     .unwrap();
     finish_client_config(kt, builder)
 }

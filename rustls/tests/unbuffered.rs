@@ -752,7 +752,6 @@ fn refresh_traffic_keys_automatically() {
         ClientConfig::builder_with_provider(aes_128_gcm_with_1024_confidentiality_limit(
             provider::default_provider(),
         ))
-        .with_safe_default_protocol_versions()
         .unwrap(),
     );
 
@@ -828,9 +827,7 @@ fn tls12_connection_fails_after_key_reaches_confidentiality_limit() {
 
     let client_config = finish_client_config(
         KeyType::Ed25519,
-        ClientConfig::builder_with_provider(provider)
-            .with_safe_default_protocol_versions()
-            .unwrap(),
+        ClientConfig::builder_with_provider(provider).unwrap(),
     );
 
     let server_config = make_server_config(KeyType::Ed25519, &provider::default_provider());
@@ -907,7 +904,6 @@ fn tls13_packed_handshake() {
     let client_config = ClientConfig::builder_with_provider(unsafe_plaintext_crypto_provider(
         provider::default_provider(),
     ))
-    .with_safe_default_protocol_versions()
     .unwrap()
     .dangerous()
     .with_custom_certificate_verifier(Arc::new(MockServerVerifier::rejects_certificate(
@@ -1554,7 +1550,6 @@ fn test_secret_extraction_enabled() {
             }
             .into(),
         )
-        .with_safe_default_protocol_versions()
         .unwrap()
         .with_no_client_auth()
         .with_single_cert(kt.get_chain(), kt.get_key())
