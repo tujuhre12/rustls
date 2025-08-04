@@ -2,6 +2,7 @@ use alloc::boxed::Box;
 use alloc::vec;
 use alloc::vec::Vec;
 use core::fmt;
+use core::ops::Deref;
 
 use zeroize::Zeroize;
 
@@ -207,7 +208,7 @@ impl ConnectionSecrets {
         )
     }
 
-    fn make_key_block(&self) -> Vec<u8> {
+    fn make_key_block(&self) -> KeyBlock {
         let shape = self.suite.aead_alg.key_block_shape();
 
         let len = (shape.enc_key_len + shape.fixed_iv_len) * 2 + shape.explicit_nonce_len;
@@ -220,7 +221,7 @@ impl ConnectionSecrets {
         self.master_secret_prf
             .prf(&mut out, b"key expansion", &randoms);
 
-        out
+        KeyBlock(out)
     }
 
     pub(crate) fn suite(&self) -> &'static Tls12CipherSuite {
@@ -297,6 +298,21 @@ impl ConnectionSecrets {
 impl Drop for ConnectionSecrets {
     fn drop(&mut self) {
         self.master_secret.zeroize();
+    }
+}
+
+struct KeyBlock(Vec<u8>);
+
+impl Deref for KeyBlock {
+    type Target = Vec<u8>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl Drop for KeyBlock {
+    fn drop(&mut self) {
+        self.0.zeroize();
     }
 }
 
